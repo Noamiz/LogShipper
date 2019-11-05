@@ -1,0 +1,21 @@
+{
+  "name": "logscollector2",
+  "version": "1.0.0",
+  "description": "Logs collector and shipper",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Noam Mizrachi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "logzio-nodejs": "^1.0.7",
+    "moment": "^2.24.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
