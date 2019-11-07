@@ -4,8 +4,11 @@ const router = express.Router();
 const moment = require("moment");
 const uuid = require("uuid");
 const fs = require("fs");
-const save = require("../../saveToFileModule");
-const readline = require("readline");
+const processMethodesModule = require("../../processMethodesModule");
+const validate = processMethodesModule.validate;
+const ship = processMethodesModule.ship;
+const addIncomeToArr = processMethodesModule.addIncomeToArr;
+const save = processMethodesModule.save;
 
 let logs = [];
 //Get updated array of logs from backup.txt file - Synchronous:
@@ -35,22 +38,22 @@ router.get("/:id", (req, res) => {
 });
 
 //Create and insert new log
-router.post("/", (req, res) => {
-  const timeFrame = moment().format();
-  const newLog = {
-    id: uuid.v4(),
-    time: timeFrame,
-    name: req.body.name
-  };
-  if (!newLog.name) {
-    res.status(400).json({ msg: "please include name of log!" });
-  } else {
-    logs.push(newLog);
-    save.save(newLog);
-    res.json(logs);
-  }
-});
+// router.post("/", (req, res) => {
+//   const timeFrame = moment().format();
+//   const newLog = {
+//     id: uuid.v4(),
+//     time: timeFrame,
+//     name: req.body.name
+//   };
+//   if (!newLog.name) {
+//     res.status(400).json({ msg: "please include name of log!" });
+//   } else {
+//     logs.push(newLog);
+//     save(newLog);
+//     res.json(logs);
+//   }
+// });
 
-console.log(logs);
+//console.log(logs);
 
 module.exports = router;
