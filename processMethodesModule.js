@@ -1,27 +1,41 @@
 const lineReader = require("line-reader");
 
 module.exports = {
-  validate: function(log) {
-    var isLogValid = true;
-    /*
-        this methode gets a log, validate that it is in the correct format, and returnes true/ false.
-        */
-    return isLogValid;
+  getIncomingData: function() {
+    //This function gets the incoming log list from kafka, and returns it.
+    return new Promise((resolve) => {
+        //code 
+        resolve(incomeLogList);
+    });
   },
-  addIncomeToArr: function(logArr, logList) {
-    /*
-            this methode goes over the logs in the arr received from KAFKA one by one, validate each log, and if it is valid insets it to the logList. 
-            */
-    return "New income was added to the logList.";
+  validate: function(log) { //This methode gets a log, validate that it is in the correct format, and returnes true/ false.
+    return new Promise(resolve => {
+      var isLogValid = true;
+      //code here
+      resolve(isLogValid);
+    });
   },
-  ship: function(logArr) {
-    /*
-            this methode send the logArr as a bulk to logz.io, if sending was unsuccessful it retries to send. 
-            If sending was successful the logArr is being empty. 
-            */
+  addIncomeToArr: async function(incomeLogList, logList) {
+    //This methode goes over the logs in the arr received from KAFKA one by one, validate each log, and if it is valid insets it to the newlogList. Last, it returnes it.
+    return new Promise((resolve) => {
+        var newLogList = logList;
+        incomeLogList.forEach(log => {
+             var isLogValid = await this.validate(log); 
+             if (isLogValid) {
+                newLogList.push(log);
+                this.saveLogToBackup(log);
+                }
+        });
+        resolve(newLogList);
+    });
+  },
+  ship: function(logList) {
+    //This methode send the logList as a bulk to logz.io, if sending was unsuccessful it retries to send.
+    //If sending was successful the logList is being empty.
+
     return "Shipping is done, logList is empty.";
   },
-  save: function(newLog) {
+  saveLogToBackup: function(newLog) {
     //Done
     fs.appendFile("./backup.txt", JSON.stringify(newLog), err => {
       if (err) {
@@ -34,5 +48,6 @@ module.exports = {
     lineReader.eachLine("./backup.txt", line => {
       logList.push(JSON.parse(line));
     });
+    return logList;
   }
 };

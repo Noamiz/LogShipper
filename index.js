@@ -6,11 +6,12 @@ const uuid = require("uuid");
 const fs = require("fs");
 const lineReader = require("line-reader");
 const processMethodesModule = require("./processMethodesModule");
-const validate = processMethodesModule.validate;
-const ship = processMethodesModule.ship;
-const addIncomeToArr = processMethodesModule.addIncomeToArr;
-const save = processMethodesModule.save;
-const getDataFromBackup = processMethodesModule.getDataFromBackup;
+var validate = processMethodesModule.validate;
+var ship = processMethodesModule.ship;
+var addIncomeToArr = processMethodesModule.addIncomeToArr;
+var save = processMethodesModule.save;
+var getDataFromBackup = processMethodesModule.getDataFromBackup;
+var getIncomingData = processMethodesModule.getIncomingData;
 
 const app = express();
 
@@ -26,7 +27,12 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 //Initiate the log list
 var logList = [];
-getDataFromBackup(logList);
+//get the logs from the file to the List - if necissary we will activate it
+//logList = getDataFromBackup(logList);
+async function processRutine(logList) {
+  var incomeLogList = await getIncomingData();
+  var newLogList = await addIncomeToArr(incomeLogList);
+}
 
 //Create and insert new log
 router.post("/api/logs", (req, res) => {
@@ -45,8 +51,7 @@ router.post("/api/logs", (req, res) => {
   }
 });
 
+//Testing that the logList is updated
 setTimeout(function() {
   console.log(logList);
 }, 5000);
-
-module.exports = router;
