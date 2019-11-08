@@ -16,11 +16,6 @@ logs = fs
   .readFileSync("./backup.txt")
   .toString()
   .split("\n");
-//Get updated array of logs from backup.txt file - Asynchronous:
-// fs.readFile('./backup.txt', function(err, data) {
-//     if(err) throw err;
-//     logs = data.toString().split("\n");
-// });
 
 // get all logs
 router.get("/", (req, res) => {
@@ -38,22 +33,24 @@ router.get("/:id", (req, res) => {
 });
 
 //Create and insert new log
-// router.post("/", (req, res) => {
-//   const timeFrame = moment().format();
-//   const newLog = {
-//     id: uuid.v4(),
-//     time: timeFrame,
-//     name: req.body.name
-//   };
-//   if (!newLog.name) {
-//     res.status(400).json({ msg: "please include name of log!" });
-//   } else {
-//     logs.push(newLog);
-//     save(newLog);
-//     res.json(logs);
-//   }
-// });
+router.post("/", (req, res) => {
+  const timeFrame = moment().format();
+  const newLog = {
+    id: uuid.v4(),
+    time: timeFrame,
+    name: req.body.name
+  };
+  if (!newLog.name) {
+    res.status(400).json({ msg: "please include name of log!" });
+  } else {
+    logs.push(newLog);
+    save(newLog);
+    res.json(logs);
+  }
+});
 
-//console.log(logs);
+setTimeout(function() {
+  console.log(logList);
+}, 5000);
 
 module.exports = router;
