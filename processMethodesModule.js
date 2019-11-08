@@ -5,6 +5,7 @@ module.exports = {
     //This function gets the incoming log list from kafka, and returns it.
     return new Promise((resolve) => {
         //code 
+        //Listen for incoming data, when delivered, we return array of log objects.
         resolve(incomeLogList);
     });
   },

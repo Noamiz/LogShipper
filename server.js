@@ -15,9 +15,15 @@ var logList = [];
 //get the logs from the file to the List - if necissary we will activate it
 //logList = getDataFromBackup(logList);
 async function processRutine(logList) {
-  var incomeLogList = await getIncomingData();
-  var newLogList = await addIncomeToArr(incomeLogList, logList);
-  ship(newLogList);
+  var countSeconds = 0;
+  while (true) {
+    var incomeLogList = await getIncomingData(); //Listen for incoming data (from bos, movile) and returns array of log objects.
+    var newLogList = await addIncomeToArr(incomeLogList, logList); //Goes over the array received from bos/mobile, validate each log, if it is valid it get inserted to a new and updated logList.
+    countSeconds++;
+    if (countSeconds >= 20 || newLogList.length >= 100) {
+      ship(newLogList);
+    }
+  }
 }
 
 setTimeout(function() {
