@@ -3,32 +3,37 @@ const lineReader = require("line-reader");
 module.exports = {
   getIncomingData: function() {
     //This function gets the incoming log list from kafka, and returns it.
-    return new Promise((resolve) => {
-        //code 
-        //Listen for incoming data, when delivered, we return array of log objects.
-        resolve(incomeLogList);
-    });
-  },
-  validate: function(log) { //This methode gets a log, validate that it is in the correct format, and returnes true/ false.
     return new Promise(resolve => {
-      var isLogValid = true;
-      //code here
-      resolve(isLogValid);
+      //code
+      //Listen for incoming data, when delivered, we return array of log objects.
+      resolve(incomeLogList);
     });
   },
-  addIncomeToArr: async function(incomeLogList, logList) {
+  validate: function(log) {
+    //This methode gets a log, validate that it is in the correct format, and returnes true/ false.
+    var isLogValid = false;
+    if (
+      log.timestamp != null &&
+      (log.environment == "development" || "test" || "production") &&
+      (log.module == "BOS" || "MobileSDK" || "LogService") &&
+      (log.category == "SDR" || "events" || "DB" || "Connection") &&
+      log.message != null
+    ) {
+      isLogValid = true;
+    }
+    return isLogValid;
+  },
+  addIncomeToArr: function(incomeLogList, logList) {
     //This methode goes over the logs in the arr received from KAFKA one by one, validate each log, and if it is valid insets it to the newlogList. Last, it returnes it.
-    return new Promise((resolve) => {
-        var newLogList = logList;
-        incomeLogList.forEach(log => {
-             var isLogValid = await this.validate(log); 
-             if (isLogValid) {
-                newLogList.push(log);
-                this.saveLogToBackup(log);
-                }
-        });
-        resolve(newLogList);
+    var newLogList = logList;
+    incomeLogList.forEach(log => {
+      var isLogValid = this.validate(log);
+      if (isLogValid) {
+        newLogList.push(log);
+        this.saveLogToBackup(log);
+      }
     });
+    return newLogList;
   },
   ship: function(logList) {
     //This methode send the logList as a bulk to logz.io, if sending was unsuccessful it retries to send.
